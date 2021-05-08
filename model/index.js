@@ -1,28 +1,47 @@
 const Contacts = require('./schemas/contact');
 
-const listContacts = async () => {
-    const results = await Contacts.find()
+const listContacts = async (userId, query) => {
+  const { sortBy, sortByDesc, filter, favorite = null, limit = 5, offset = 0 } = query;
+  const optionSearch = { owner: userId }
+  if (favorite !== null) {
+    optionSearch.favorite = favorite;
+  }
+  const results = await Contacts.paginate(optionSearch, {
+    limit,
+    offset,
+    sort: {
+      ...(sortBy ? { [`${sortByDesc}`]: 1 } : {}),
+      ...(sortByDesc ? {[`${sortByDesc}`]: -1 } : {}),
+    },
+    select: filter ? filter.split('|').join(' ') : '',
+    populate: {
+    path: 'owner',
+    select: 'name email subscription -_id',
+    }})
     return results
 }
 
-const getContactById = async id => {
-  const result = await Contacts.findOne({_id: id})
+const getContactById = async (userId, id) => {
+  const result = await Contacts.findOne({_id: id, owner: userId}).populate({
+    path: 'owner',
+    select: 'name email subscription -_id',
+    })
     return result
 };
 
-const addContact = async body => {
-  const result = await Contacts.create(body)
+const addContact = async (userId, body) => {
+  const result = await Contacts.create({...body, owner: userId})
   return result
 };
 
-const updateContact = async (id, body) => {
-  const result = await Contacts.findByIdAndUpdate({ _id: id }, {...body}, {new: true})
+const updateContact = async (userId, id, body) => {
+  const result = await Contacts.findByIdAndUpdate({ _id: id, owner: userId }, {...body}, {new: true})
   return result
 };
 
-const updateStatusContact = async (id, body) => {
+const updateStatusContact = async (userId, id, body) => {
   const result = await Contacts.findByIdAndUpdate(
-    { _id: id },
+    { _id: id, owner: userId },
     { ...body },
     { new: true },
   );
@@ -30,8 +49,8 @@ const updateStatusContact = async (id, body) => {
   return result;
 };
 
-const removeContact = async id => {
-const result = await Contacts.findByIdAndRemove({_id: id})
+const removeContact = async (userId, id) => {
+const result = await Contacts.findByIdAndRemove({_id: id, owner: userId})
     return result
 };
 

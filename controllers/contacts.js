@@ -1,18 +1,9 @@
-const express = require('express');
-const router = express.Router();
-const Contacts = require('../../model');
-const {
-  validationCreateContact,
-  validationUpdateContact,
-  validationUpdateStatusContact,
-  validationObjectId,
-} = require('./valid-contact-router');
+const Contacts = require('../model');
 
-const handleError = require('../../helper/handle-error')
-
-router.get('/', async (req, res, next) => {
+const listContacts = async (req, res, next) => {
   try {
-    const contacts = await Contacts.listContacts();
+    const userId = req.user?.id;
+    const contacts = await Contacts.listContacts(userId, req.query);
     return res.json({
       status: 'success',
       code: 200,
@@ -23,11 +14,12 @@ router.get('/', async (req, res, next) => {
   } catch (error) {
     next(error);
   }
-});
+};
 
-router.get('/:contactId', validationObjectId, async (req, res, next) => {
+const getContactById = async (req, res, next) => {
   try {
-    const contact = await Contacts.getContactById(req.params.contactId);
+    const userId = req.user?.id;
+    const contact = await Contacts.getContactById(userId, req.params.contactId);
     if (contact) {
       return res.status(201).json({
         status: 'success',
@@ -46,25 +38,12 @@ router.get('/:contactId', validationObjectId, async (req, res, next) => {
   } catch (error) {
     next(error);
   }
-});
+};
 
-// router.post('/', validationCreateContact, handleError(async (req, res, next) => {
-//   try {
-//     const contact = await Contacts.addContact(req.body);
-//     return res.status(201).json({
-//       status: 'success',
-//       code: 201,
-//       data: {
-//         contact,
-//       },
-//     });
-//   } catch (error) {
-//     next(error);
-//   }
-// }));
-
-router.post('/', validationCreateContact, handleError(async (req, res, next) => {
-    const contact = await Contacts.addContact(req.body);
+const addContact = async (req, res, next) => {
+  try {
+     const userId = req.user?.id;
+    const contact = await Contacts.addContact(userId, req.body);
     return res.status(201).json({
       status: 'success',
       code: 201,
@@ -72,14 +51,15 @@ router.post('/', validationCreateContact, handleError(async (req, res, next) => 
         contact,
       },
     });
-  
-}));
+  } catch (error) {
+    next(error);
+  }
+};
 
-
-
-router.delete('/:contactId', validationObjectId, async (req, res, next) => {
+const removeContact = async (req, res, next) => {
   try {
-    const contact = await Contacts.removeContact(req.params.contactId);
+     const userId = req.user?.id;
+    const contact = await Contacts.removeContact(userId, req.params.contactId);
     if (contact) {
       return res.status(201).json({
         status: 'success',
@@ -98,11 +78,13 @@ router.delete('/:contactId', validationObjectId, async (req, res, next) => {
   } catch (error) {
     next(error);
   }
-});
+};
 
-router.patch('/:contactId', validationObjectId, validationUpdateContact, async (req, res, next) => {
+const updateContact = async (req, res, next) => {
   try {
+     const userId = req.user?.id;
     const contact = await Contacts.updateContact(
+      userId,
       req.params.contactId,
       req.body,
     );
@@ -125,15 +107,13 @@ router.patch('/:contactId', validationObjectId, validationUpdateContact, async (
   } catch (error) {
     next(error);
   }
-});
+};
 
-router.patch(
-  '/:contactId/favorite',
-  validationObjectId,
-  validationUpdateStatusContact,
-  async (req, res, next) => {
-    try {
-      const contact = await Contacts.updateStatusContact(
+const updateStatusContact = async (req, res, next) => {
+  try {
+       const userId = req.user?.id;
+    const contact = await Contacts.updateStatusContact(
+        userId,
         req.params.contactId,
         req.body,
       );
@@ -156,7 +136,47 @@ router.patch(
     } catch (error) {
       next(error);
     }
-  },
-);
+};
 
-module.exports = router;
+const onlySTARTER = async (req, res, next) => {
+  return res.json({
+    status: 'success',
+    code: 200,
+    data: {
+      message: 'only Starter',
+    },
+  });
+};
+
+const onlyPRO = async (req, res, next) => {
+  return res.json({
+    status: 'success',
+    code: 200,
+    data: {
+      message: 'Only Pro',
+    },
+  });
+};
+
+const onlyBUSINESS = async (req, res, next) => {
+  return res.json({
+    status: 'success',
+    code: 200,
+    data: {
+      message: 'Only Business',
+    },
+  });
+};
+  
+module.exports = {
+    listContacts,
+    getContactById,
+    addContact,
+    removeContact,
+    updateContact,
+    updateStatusContact,
+    onlySTARTER,
+    onlyPRO,
+    onlyBUSINESS
+    
+}
