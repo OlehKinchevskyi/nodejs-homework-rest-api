@@ -18,11 +18,11 @@ jest.mock('cloudinary')
 describe('Testing the route api/users', () => {
    describe('should handle PATCH request', () => {
     test('should return 200 status for PATCH: /users/avatar', async (done) => {
-      const buffer = await fs.readFile('./test/050.jpg')
+      const buffer = await fs.readFile('./test/ava.jpg')
       const res = await request(app)
         .patch('/api/users/avatars')
         .set('Authorization', `Bearer ${token}`)
-        .attach('avatar', buffer, '050.jpg')
+        .attach('avatar', buffer, 'ava.jpg')
 
       expect(res.status).toEqual(200)
       expect(res.body).toBeDefined()
