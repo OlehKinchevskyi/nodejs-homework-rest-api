@@ -4,11 +4,12 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node ./bin/server.js",
     "start:dev": "nodemon ./bin/server.js",
     "lint": "eslint **/*.js",
-    "lint:fix": "eslint --fix **/*.js"
+    "lint:fix": "eslint --fix **/*.js",
+    "test": "jest --no-cache --verbose --detectOpenHandles",
+    "test:coverage": "jest --coverage --passWithNoTests"
   },
   "repository": {
     "type": "git",
@@ -32,17 +33,36 @@
     "nodemon": "^2.0.7"
   },
   "dependencies": {
+<<<<<<< Updated upstream
+=======
+    "bcryptjs": "^2.4.3",
+    "cloudinary": "1.25.1",
+>>>>>>> Stashed changes
     "commander": "^7.2.0",
     "cors": "^2.8.5",
     "dotenv": "8.2.0",
     "express": "^4.17.1",
     "express-validator": "6.10.0",
     "got": "^11.8.2",
+<<<<<<< Updated upstream
+=======
+    "gravatar": "1.8.1",
+    "helmet": "^4.6.0",
+    "jest": "^26.6.3",
+    "jimp": "0.16.1",
+>>>>>>> Stashed changes
     "joi": "17.4.0",
     "mongodb": "3.6.6",
     "mongoose": "5.12.5",
     "morgan": "^1.10.0",
+<<<<<<< Updated upstream
+=======
+    "multer": "1.4.2",
+    "passport": "^0.4.1",
+    "passport-jwt": "^4.0.0",
+>>>>>>> Stashed changes
     "shortid": "^2.2.16",
+    "supertest": "^6.1.3",
     "uuid": "8.3.2"
   }
 }

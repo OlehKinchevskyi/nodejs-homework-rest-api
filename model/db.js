@@ -7,16 +7,19 @@ const db = mongoose.connect(uriDB, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
     useCreateIndex: true,
+    useFindAndModify: false,
     poolSize: 5
 });
-
-mongoose.connection.on('error', (err) => {
-    console.log(`Mongoose error: ${err.message}`)
-})
 
 mongoose.connection.on('connected', () => {
     console.log("Database connection successful")
 })
+mongoose.connection.on('error', (err) => {
+    console.log(`Mongoose error: ${err.message}`)
+    process.exit(1)
+})
+mongoose.connection.on('disconnected', () => {console.log(`Mongoose disconnected`)}
+)
 
 
 process.on('SIGINT', async () => {
