@@ -5,6 +5,7 @@ const listContacts = async () => {
     return results
 }
 
+<<<<<<< Updated upstream:model/index.js
 const getContactById = async id => {
   const result = await Contacts.findOne({_id: id})
     return result
@@ -12,6 +13,18 @@ const getContactById = async id => {
 
 const addContact = async body => {
   const result = await Contacts.create(body)
+=======
+const getById = async (userId, id) => {
+  const result = await Contacts.findOne({_id: id, owner: userId}).populate({
+    path: 'owner',
+    select: 'name email subscription -_id',
+    })
+    return result
+};
+
+const create = async (userId, body) => {
+  const result = await Contacts.create({...body, owner: userId})
+>>>>>>> Stashed changes:model/contacts.js
   return result
 };
 
@@ -37,9 +50,9 @@ const result = await Contacts.findByIdAndRemove({_id: id})
 
 module.exports = {
   listContacts,
-  getContactById,
+  getById,
   removeContact,
-  addContact,
+  create,
   updateContact,
   updateStatusContact,
 };

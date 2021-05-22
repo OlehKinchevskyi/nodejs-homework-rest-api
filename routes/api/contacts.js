@@ -1,3 +1,4 @@
+<<<<<<< Updated upstream:routes/api/contacts.js
 const express = require('express');
 const router = express.Router();
 const Contacts = require('../../model');
@@ -7,6 +8,9 @@ const {
   validationUpdateStatusContact,
   validationObjectId,
 } = require('./valid-contact-router');
+=======
+const Contacts = require('../model/contacts');
+>>>>>>> Stashed changes:controllers/contacts.js
 
 const handleError = require('../../helper/handle-error')
 
