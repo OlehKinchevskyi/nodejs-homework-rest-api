@@ -3,6 +3,7 @@ const jwt = require('jsonwebtoken')
 const app = require('../app')
 const fs = require('fs').promises
 const { User, newUser } = require('../model/__mocks__/data')
+const { valid } = require('joi')
 
 require('dotenv').config()
 
@@ -16,7 +17,7 @@ jest.mock('../model/users.js')
 jest.mock('cloudinary')
 
 describe('Testing the route api/users', () => {
-   describe('should handle PATCH request', () => {
+  describe('should handle PATCH request', () => {
     test('should return 200 status for PATCH: /users/avatar', async (done) => {
       const buffer = await fs.readFile('./test/050.jpg')
       const res = await request(app)
@@ -31,7 +32,7 @@ describe('Testing the route api/users', () => {
     })
   }) 
 
-   describe('should handle POST request', () => {
+  describe('should handle POST request', () => {
     test('should return 200 POST: /api/users/register', async (done) => {
         const res = await request(app)
             .post('/api/users/register')
@@ -43,17 +44,18 @@ describe('Testing the route api/users', () => {
 
     test('should return 409 status POST: /api/users/register email address has already been used', async (done) => {
         const res = await request(app)
-            .post('/api/users/register')
-            .send(newUser)
+          .post('/api/users/register')
+          .send(newUser)
       expect(res.status).toEqual(409)
       expect(res.body).toBeDefined()
       done()
     })
-
+    
     test('should return 200 status POST: /api/users/login', async (done) => {
         const res = await request(app)
-            .post('/api/users/login')
-            .send(newUser)
+          .post('/api/users/login')
+          .send(newUser)
+      console.log('post',res.body)
       expect(res.status).toEqual(200)
       expect(res.body).toBeDefined()
       done()
@@ -76,5 +78,5 @@ describe('Testing the route api/users', () => {
       expect(res.body).toBeDefined()
       done()
     })
+  })
   }) 
-}) 
